@@ -1,0 +1,20 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.player.tv.app-mergeReleaseResources-76:/values-watch-v21/values-watch-v21.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\Captain\\.gradle\\caches\\9.6.0\\transforms\\374569f60af5d222629e20ad79cc74c0\\transformed\\appcompat-1.6.1\\res\\values-watch-v21\\values-watch-v21.xml",
+                    "from": {
+                        "startLines": "2,6,10",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "55,271,499",
+                        "endLines": "5,9,13",
+                        "endColumns": "12,12,12",
+                        "endOffsets": "266,494,724"
+                    }
+                }
+            ]
+        }
+    ]
+}

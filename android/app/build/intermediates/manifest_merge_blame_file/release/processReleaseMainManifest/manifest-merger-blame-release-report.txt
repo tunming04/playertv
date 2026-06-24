@@ -1,0 +1,190 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.player.tv"
+4    android:versionCode="1"
+5    android:versionName="1.0.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="29"
+9        android:targetSdkVersion="35" />
+10
+11    <uses-permission android:name="android.permission.INTERNET" />
+11-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:5:5-67
+11-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:5:22-64
+12    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+12-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:6:5-79
+12-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:6:22-76
+13    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+13-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:7:5-76
+13-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:7:22-73
+14    <uses-permission
+14-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:8:5-9:38
+15        android:name="android.permission.READ_EXTERNAL_STORAGE"
+15-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:8:22-77
+16        android:maxSdkVersion="32" />
+16-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:9:9-35
+17    <uses-permission
+17-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:10:5-11:38
+18        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+18-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:10:22-78
+19        android:maxSdkVersion="28" />
+19-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:11:9-35
+20    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+20-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:12:5-77
+20-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:12:22-74
+21    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+21-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:13:5-92
+21-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:13:22-89
+22    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+22-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:14:5-77
+22-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:14:22-74
+23
+24    <permission
+24-->[androidx.core:core:1.15.0] C:\Users\Captain\.gradle\caches\9.6.0\transforms\05e92bc524757dfce756946a975c48df\transformed\core-1.15.0\AndroidManifest.xml:22:5-24:47
+25        android:name="com.player.tv.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+25-->[androidx.core:core:1.15.0] C:\Users\Captain\.gradle\caches\9.6.0\transforms\05e92bc524757dfce756946a975c48df\transformed\core-1.15.0\AndroidManifest.xml:23:9-81
+26        android:protectionLevel="signature" />
+26-->[androidx.core:core:1.15.0] C:\Users\Captain\.gradle\caches\9.6.0\transforms\05e92bc524757dfce756946a975c48df\transformed\core-1.15.0\AndroidManifest.xml:24:9-44
+27
+28    <uses-permission android:name="com.player.tv.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+28-->[androidx.core:core:1.15.0] C:\Users\Captain\.gradle\caches\9.6.0\transforms\05e92bc524757dfce756946a975c48df\transformed\core-1.15.0\AndroidManifest.xml:26:5-97
+28-->[androidx.core:core:1.15.0] C:\Users\Captain\.gradle\caches\9.6.0\transforms\05e92bc524757dfce756946a975c48df\transformed\core-1.15.0\AndroidManifest.xml:26:22-94
+29
+30    <application
+30-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:16:5-51:19
+31        android:name="com.player.tv.App"
+31-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:17:9-28
+32        android:allowBackup="true"
+32-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:18:9-35
+33        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+33-->[androidx.core:core:1.15.0] C:\Users\Captain\.gradle\caches\9.6.0\transforms\05e92bc524757dfce756946a975c48df\transformed\core-1.15.0\AndroidManifest.xml:28:18-86
+34        android:extractNativeLibs="false"
+35        android:icon="@drawable/ic_launcher"
+35-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:19:9-45
+36        android:label="@string/app_name"
+36-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:20:9-41
+37        android:roundIcon="@drawable/ic_launcher"
+37-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:21:9-50
+38        android:supportsRtl="true"
+38-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:22:9-35
+39        android:theme="@style/Theme.PlayerTV"
+39-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:23:9-46
+40        android:usesCleartextTraffic="true" >
+40-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:24:9-44
+41        <activity
+41-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:27:9-43:20
+42            android:name="com.player.tv.MainActivity"
+42-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:28:13-41
+43            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|smallestScreenSize"
+43-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:30:13-106
+44            android:exported="true"
+44-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:29:13-36
+45            android:launchMode="singleTask"
+45-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:32:13-44
+46            android:supportsPictureInPicture="true" >
+46-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:31:13-52
+47            <intent-filter>
+47-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:33:13-36:29
+48                <action android:name="android.intent.action.MAIN" />
+48-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:34:17-69
+48-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:34:25-66
+49
+50                <category android:name="android.intent.category.LAUNCHER" />
+50-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:35:17-77
+50-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:35:27-74
+51            </intent-filter>
+52            <intent-filter>
+52-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:37:13-42:29
+53                <action android:name="android.intent.action.VIEW" />
+53-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:38:17-69
+53-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:38:25-66
+54
+55                <category android:name="android.intent.category.DEFAULT" />
+55-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:39:17-76
+55-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:39:27-73
+56                <category android:name="android.intent.category.BROWSABLE" />
+56-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:40:17-78
+56-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:40:27-75
+57
+58                <data android:scheme="playertv" />
+58-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:41:17-51
+58-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:41:23-48
+59            </intent-filter>
+60        </activity>
+61
+62        <provider
+63            android:name="androidx.startup.InitializationProvider"
+63-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:46:13-67
+64            android:authorities="com.player.tv.androidx-startup"
+64-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:47:13-68
+65            android:exported="false" >
+65-->E:\Code\iptv-cap\iptv-vietnam\android\app\src\main\AndroidManifest.xml:48:13-37
+66            <meta-data
+66-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Captain\.gradle\caches\9.6.0\transforms\8e97a9f33d92317f167f62fe7894e35c\transformed\jetified-emoji2-1.3.0\AndroidManifest.xml:29:13-31:52
+67                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+67-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Captain\.gradle\caches\9.6.0\transforms\8e97a9f33d92317f167f62fe7894e35c\transformed\jetified-emoji2-1.3.0\AndroidManifest.xml:30:17-75
+68                android:value="androidx.startup" />
+68-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Captain\.gradle\caches\9.6.0\transforms\8e97a9f33d92317f167f62fe7894e35c\transformed\jetified-emoji2-1.3.0\AndroidManifest.xml:31:17-49
+69            <meta-data
+69-->[androidx.lifecycle:lifecycle-process:2.8.7] C:\Users\Captain\.gradle\caches\9.6.0\transforms\920697bc01f9c6ebf0776c1b0301d5a2\transformed\jetified-lifecycle-process-2.8.7\AndroidManifest.xml:29:13-31:52
+70                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+70-->[androidx.lifecycle:lifecycle-process:2.8.7] C:\Users\Captain\.gradle\caches\9.6.0\transforms\920697bc01f9c6ebf0776c1b0301d5a2\transformed\jetified-lifecycle-process-2.8.7\AndroidManifest.xml:30:17-78
+71                android:value="androidx.startup" />
+71-->[androidx.lifecycle:lifecycle-process:2.8.7] C:\Users\Captain\.gradle\caches\9.6.0\transforms\920697bc01f9c6ebf0776c1b0301d5a2\transformed\jetified-lifecycle-process-2.8.7\AndroidManifest.xml:31:17-49
+72            <meta-data
+72-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Captain\.gradle\caches\9.6.0\transforms\8f28b18930a8cf50efb8b7622d57c69b\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:29:13-31:52
+73                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+73-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Captain\.gradle\caches\9.6.0\transforms\8f28b18930a8cf50efb8b7622d57c69b\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:30:17-85
+74                android:value="androidx.startup" />
+74-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Captain\.gradle\caches\9.6.0\transforms\8f28b18930a8cf50efb8b7622d57c69b\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:31:17-49
+75        </provider>
+76
+77        <service
+77-->[androidx.room:room-runtime:2.6.1] C:\Users\Captain\.gradle\caches\9.6.0\transforms\3d695236bf567a86bed959c86de0b767\transformed\room-runtime-2.6.1\AndroidManifest.xml:24:9-28:63
+78            android:name="androidx.room.MultiInstanceInvalidationService"
+78-->[androidx.room:room-runtime:2.6.1] C:\Users\Captain\.gradle\caches\9.6.0\transforms\3d695236bf567a86bed959c86de0b767\transformed\room-runtime-2.6.1\AndroidManifest.xml:25:13-74
+79            android:directBootAware="true"
+79-->[androidx.room:room-runtime:2.6.1] C:\Users\Captain\.gradle\caches\9.6.0\transforms\3d695236bf567a86bed959c86de0b767\transformed\room-runtime-2.6.1\AndroidManifest.xml:26:13-43
+80            android:exported="false" />
+80-->[androidx.room:room-runtime:2.6.1] C:\Users\Captain\.gradle\caches\9.6.0\transforms\3d695236bf567a86bed959c86de0b767\transformed\room-runtime-2.6.1\AndroidManifest.xml:27:13-37
+81
+82        <receiver
+82-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Captain\.gradle\caches\9.6.0\transforms\8f28b18930a8cf50efb8b7622d57c69b\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:34:9-52:20
+83            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+83-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Captain\.gradle\caches\9.6.0\transforms\8f28b18930a8cf50efb8b7622d57c69b\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:35:13-76
+84            android:directBootAware="false"
+84-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Captain\.gradle\caches\9.6.0\transforms\8f28b18930a8cf50efb8b7622d57c69b\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:36:13-44
+85            android:enabled="true"
+85-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Captain\.gradle\caches\9.6.0\transforms\8f28b18930a8cf50efb8b7622d57c69b\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:37:13-35
+86            android:exported="true"
+86-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Captain\.gradle\caches\9.6.0\transforms\8f28b18930a8cf50efb8b7622d57c69b\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:38:13-36
+87            android:permission="android.permission.DUMP" >
+87-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Captain\.gradle\caches\9.6.0\transforms\8f28b18930a8cf50efb8b7622d57c69b\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:39:13-57
+88            <intent-filter>
+88-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Captain\.gradle\caches\9.6.0\transforms\8f28b18930a8cf50efb8b7622d57c69b\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:40:13-42:29
+89                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+89-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Captain\.gradle\caches\9.6.0\transforms\8f28b18930a8cf50efb8b7622d57c69b\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:41:17-91
+89-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Captain\.gradle\caches\9.6.0\transforms\8f28b18930a8cf50efb8b7622d57c69b\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:41:25-88
+90            </intent-filter>
+91            <intent-filter>
+91-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Captain\.gradle\caches\9.6.0\transforms\8f28b18930a8cf50efb8b7622d57c69b\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:43:13-45:29
+92                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+92-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Captain\.gradle\caches\9.6.0\transforms\8f28b18930a8cf50efb8b7622d57c69b\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:44:17-85
+92-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Captain\.gradle\caches\9.6.0\transforms\8f28b18930a8cf50efb8b7622d57c69b\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:44:25-82
+93            </intent-filter>
+94            <intent-filter>
+94-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Captain\.gradle\caches\9.6.0\transforms\8f28b18930a8cf50efb8b7622d57c69b\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:46:13-48:29
+95                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+95-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Captain\.gradle\caches\9.6.0\transforms\8f28b18930a8cf50efb8b7622d57c69b\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:47:17-88
+95-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Captain\.gradle\caches\9.6.0\transforms\8f28b18930a8cf50efb8b7622d57c69b\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:47:25-85
+96            </intent-filter>
+97            <intent-filter>
+97-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Captain\.gradle\caches\9.6.0\transforms\8f28b18930a8cf50efb8b7622d57c69b\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:49:13-51:29
+98                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+98-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Captain\.gradle\caches\9.6.0\transforms\8f28b18930a8cf50efb8b7622d57c69b\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:50:17-95
+98-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Captain\.gradle\caches\9.6.0\transforms\8f28b18930a8cf50efb8b7622d57c69b\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:50:25-92
+99            </intent-filter>
+100        </receiver>
+101    </application>
+102
+103</manifest>

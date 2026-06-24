@@ -1,0 +1,16 @@
+﻿name = "playertv-app"
+main = "index.js"
+compatibility_date = "2024-01-01"
+
+# Cloudflare Workers KV - Ä‘á»ƒ store playlist data
+kv_namespaces = [
+  { binding = "PLAYLIST", id = "1e50d7995381431c925225d85846205c" }
+]
+
+# Routes (optional - có thá»ƒ dùng default workers.dev domain)
+# routes = [
+#   { pattern = "iptv-api.your-domain.com/*", zone_name = "your-domain.com" }
+# ]
+
+[vars]
+ENVIRONMENT = "production"

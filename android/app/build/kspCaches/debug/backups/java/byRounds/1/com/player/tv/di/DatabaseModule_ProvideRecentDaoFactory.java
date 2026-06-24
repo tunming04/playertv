@@ -1,0 +1,48 @@
+package com.player.tv.di;
+
+import com.player.tv.data.local.AppDatabase;
+import com.player.tv.data.local.RecentDao;
+import dagger.internal.DaggerGenerated;
+import dagger.internal.Factory;
+import dagger.internal.Preconditions;
+import dagger.internal.QualifierMetadata;
+import dagger.internal.ScopeMetadata;
+import javax.annotation.processing.Generated;
+import javax.inject.Provider;
+
+@ScopeMetadata
+@QualifierMetadata
+@DaggerGenerated
+@Generated(
+    value = "dagger.internal.codegen.ComponentProcessor",
+    comments = "https://dagger.dev"
+)
+@SuppressWarnings({
+    "unchecked",
+    "rawtypes",
+    "KotlinInternal",
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation"
+})
+public final class DatabaseModule_ProvideRecentDaoFactory implements Factory<RecentDao> {
+  private final Provider<AppDatabase> databaseProvider;
+
+  public DatabaseModule_ProvideRecentDaoFactory(Provider<AppDatabase> databaseProvider) {
+    this.databaseProvider = databaseProvider;
+  }
+
+  @Override
+  public RecentDao get() {
+    return provideRecentDao(databaseProvider.get());
+  }
+
+  public static DatabaseModule_ProvideRecentDaoFactory create(
+      Provider<AppDatabase> databaseProvider) {
+    return new DatabaseModule_ProvideRecentDaoFactory(databaseProvider);
+  }
+
+  public static RecentDao provideRecentDao(AppDatabase database) {
+    return Preconditions.checkNotNullFromProvides(DatabaseModule.INSTANCE.provideRecentDao(database));
+  }
+}

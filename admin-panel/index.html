@@ -1,0 +1,474 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); 
+            color: #fff; 
+            min-height: 100vh;
+        }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 30px;
+        }
+        h1 { color: #ffd700; font-size: 24px; }
+        
+        .stats {
+            display: flex;
+            gap: 20px;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.1);
+            padding: 15px 25px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .stat-value { font-size: 28px; font-weight: bold; color: #ffd700; }
+        .stat-label { font-size: 12px; color: #b0b0b0; }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 30px;
+        }
+        
+        .card { 
+            background: rgba(255,255,255,0.08); 
+            border-radius: 16px; 
+            padding: 24px;
+            backdrop-filter: blur(10px);
+        }
+        .card h2 { 
+            color: #ffd700; 
+            font-size: 18px; 
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-group { margin-bottom: 16px; }
+        label { 
+            display: block; 
+            margin-bottom: 6px; 
+            color: #b0b0b0;
+            font-size: 14px;
+        }
+        input, select { 
+            width: 100%; 
+            padding: 12px 16px; 
+            border: 1px solid rgba(255,255,255,0.15); 
+            border-radius: 10px; 
+            background: rgba(255,255,255,0.05); 
+            color: #fff;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        input:focus, select:focus { 
+            outline: none; 
+            border-color: #ffd700;
+            background: rgba(255,255,255,0.08);
+        }
+        input::placeholder { color: #666; }
+        
+        .btn { 
+            padding: 12px 24px; 
+            border: none; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary { background: #ffd700; color: #1a1a2e; }
+        .btn-primary:hover { background: #ffe44d; transform: translateY(-1px); }
+        .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; }
+        .btn-secondary:hover { background: rgba(255,255,255,0.15); }
+        .btn-danger { background: #e53935; color: #fff; }
+        .btn-danger:hover { background: #c62828; }
+        .btn-success { background: #4caf50; color: #fff; }
+        
+        .channels-list { 
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .channel-item { 
+            display: grid;
+            grid-template-columns: 1fr 120px 2fr auto;
+            gap: 12px;
+            align-items: center;
+            padding: 14px 16px; 
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            transition: background 0.2s;
+        }
+        .channel-item:hover { background: rgba(255,255,255,0.05); }
+        .channel-item:last-child { border-bottom: none; }
+        
+        .channel-name { 
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .channel-group { 
+            color: #ffd700; 
+            font-size: 12px;
+            background: rgba(255,215,0,0.15);
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-align: center;
+        }
+        .channel-url { 
+            color: #888; 
+            font-size: 12px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .actions { 
+            display: flex; 
+            gap: 6px;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 16px 24px;
+            border-radius: 10px;
+            color: #fff;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+            z-index: 1000;
+        }
+        .toast.success { background: #4caf50; }
+        .toast.error { background: #e53935; }
+        
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .search-box input {
+            padding-left: 40px;
+        }
+        .search-box::before {
+            content: "ðŸ”";
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        .empty-state-icon { font-size: 48px; margin-bottom: 16px; }
+        
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            .channel-item {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ðŸ“º Admin Panel</h1>
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalChannels">0</div>
+                    <div class="stat-label">Tá»•ng kÃªnh</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalGroups">0</div>
+                    <div class="stat-label">NhÃ³m</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="card">
+                <h2>âž• ThÃªm kÃªnh má»›i</h2>
+                <div class="form-group">
+                    <label>TÃªn kÃªnh *</label>
+                    <input type="text" id="channelName" placeholder="VTV1 FHD">
+                </div>
+                <div class="form-group">
+                    <label>NhÃ³m *</label>
+                    <input type="text" id="channelGroup" placeholder="FPT [ALT]">
+                </div>
+                <div class="form-group">
+                    <label>URL Stream *</label>
+                    <input type="text" id="channelUrl" placeholder="https://...">
+                </div>
+                <button class="btn btn-primary" onclick="addChannel()">
+                    <span>âž•</span> ThÃªm kÃªnh
+                </button>
+                
+                <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <h2>ðŸ“¤ Import M3U</h2>
+                    <div class="form-group">
+                        <label>DÃ¡n ná»™i dung M3U</label>
+                        <textarea id="m3uContent" rows="4" style="width:100%; padding:12px; border:1px solid rgba(255,255,255,0.15); border-radius:10px; background:rgba(255,255,255,0.05); color:#fff; resize:vertical;"></textarea>
+                    </div>
+                    <button class="btn btn-secondary" onclick="importM3U()">
+                        <span>ðŸ“¥</span> Import
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>ðŸ“‹ Danh sÃ¡ch kÃªnh</h2>
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="TÃ¬m kiáº¿m kÃªnh..." oninput="filterChannels()">
+                </div>
+                <div class="channels-list" id="channelsList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+        let allChannels = [];
+        let editingIndex = -1;
+
+        async function loadChannels() {
+            try {
+                const res = await fetch(API_BASE + '/api/admin/channels');
+                const data = await res.json();
+                allChannels = data.channels || [];
+                updateStats();
+                renderChannels(allChannels);
+            } catch (e) {
+                console.error('Error:', e);
+                showToast('Lá»—i khi táº£i danh sÃ¡ch', 'error');
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('totalChannels').textContent = allChannels.length;
+            const groups = new Set(allChannels.map(ch => ch.group));
+            document.getElementById('totalGroups').textContent = groups.size;
+        }
+
+        function renderChannels(channels) {
+            const list = document.getElementById('channelsList');
+            
+            if (channels.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">ðŸ“º</div>
+                        <p>ChÆ°a cÃ³ kÃªnh nÃ o</p>
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = channels.map((ch, idx) => `
+                <div class="channel-item" data-index="${idx}">
+                    <div class="channel-name">${ch.name}</div>
+                    <div class="channel-group">${ch.group}</div>
+                    <div class="channel-url" title="${ch.url}">${ch.url}</div>
+                    <div class="actions">
+                        <button class="btn btn-secondary" onclick="editChannel(${idx})" title="Sá»­a">âœï¸</button>
+                        <button class="btn btn-danger" onclick="deleteChannel(${idx})" title="XÃ³a">ðŸ—‘ï¸</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterChannels() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allChannels.filter(ch => 
+                ch.name.toLowerCase().includes(query) || 
+                ch.group.toLowerCase().includes(query)
+            );
+            renderChannels(filtered);
+        }
+
+        async function addChannel() {
+            const name = document.getElementById('channelName').value.trim();
+            const group = document.getElementById('channelGroup').value.trim();
+            const url = document.getElementById('channelUrl').value.trim();
+
+            if (!name || !group || !url) {
+                showToast('Vui lÃ²ng nháº­p Ä‘áº§y Ä‘á»§ thÃ´ng tin', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch(API_BASE + '/api/admin/channels', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, group, url })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    allChannels = data.channels;
+                    updateStats();
+                    renderChannels(allChannels);
+                    clearForm();
+                    showToast('ÄÃ£ thÃªm kÃªnh thÃ nh cÃ´ng!', 'success');
+                }
+            } catch (e) {
+                showToast('Lá»—i: ' + e.message, 'error');
+            }
+        }
+
+        function editChannel(idx) {
+            const channel = allChannels[idx];
+            document.getElementById('channelName').value = channel.name;
+            document.getElementById('channelGroup').value = channel.group;
+            document.getElementById('channelUrl').value = channel.url;
+            editingIndex = idx;
+            
+            document.querySelector('.btn-primary').innerHTML = '<span>ðŸ’¾</span> Cáº­p nháº­t';
+            document.querySelector('.btn-primary').onclick = updateChannel;
+        }
+
+        async function updateChannel() {
+            if (editingIndex < 0) return;
+
+            const name = document.getElementById('channelName').value.trim();
+            const group = document.getElementById('channelGroup').value.trim();
+            const url = document.getElementById('channelUrl').value.trim();
+
+            if (!name || !group || !url) {
+                showToast('Vui lÃ²ng nháº­p Ä‘áº§y Ä‘á»§ thÃ´ng tin', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch(API_BASE + '/api/admin/channels/' + editingIndex, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, group, url })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    allChannels = data.channels;
+                    renderChannels(allChannels);
+                    clearForm();
+                    showToast('ÄÃ£ cáº­p nháº­t kÃªnh!', 'success');
+                }
+            } catch (e) {
+                showToast('Lá»—i: ' + e.message, 'error');
+            }
+        }
+
+        async function deleteChannel(idx) {
+            if (!confirm('Báº¡n cÃ³ cháº¯c muá»‘n xÃ³a kÃªnh nÃ y?')) return;
+
+            try {
+                const res = await fetch(API_BASE + '/api/admin/channels/' + idx, {
+                    method: 'DELETE'
+                });
+                const data = await res.json();
+                if (data.success) {
+                    allChannels = data.channels;
+                    updateStats();
+                    renderChannels(allChannels);
+                    showToast('ÄÃ£ xÃ³a kÃªnh', 'success');
+                }
+            } catch (e) {
+                showToast('Lá»—i: ' + e.message, 'error');
+            }
+        }
+
+        function importM3U() {
+            const content = document.getElementById('m3uContent').value;
+            if (!content.trim()) {
+                showToast('Vui lÃ²ng dÃ¡n ná»™i dung M3U', 'error');
+                return;
+            }
+
+            const lines = content.split('\n');
+            let count = 0;
+
+            for (let i = 0; i < lines.length; i++) {
+                if (lines[i].startsWith('#EXTINF:')) {
+                    const match = lines[i].match(/group-title="([^"]+)"/);
+                    const group = match ? match[1] : 'Default';
+                    const nameMatch = lines[i].match(/,([^,]+)$/);
+                    const name = nameMatch ? nameMatch[1].trim() : 'Unknown';
+                    
+                    // Get URL from next line
+                    let url = '';
+                    for (let j = i + 1; j < lines.length; j++) {
+                        if (!lines[j].startsWith('#') && lines[j].trim()) {
+                            url = lines[j].trim();
+                            break;
+                        }
+                    }
+
+                    if (url) {
+                        allChannels.push({ name, group, url });
+                        count++;
+                    }
+                }
+            }
+
+            if (count > 0) {
+                // Save to server
+                fetch(API_BASE + '/api/admin/channels', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(allChannels)
+                });
+                
+                updateStats();
+                renderChannels(allChannels);
+                document.getElementById('m3uContent').value = '';
+                showToast(`ÄÃ£ import ${count} kÃªnh`, 'success');
+            } else {
+                showToast('KhÃ´ng tÃ¬m tháº¥y kÃªnh nÃ o', 'error');
+            }
+        }
+
+        function clearForm() {
+            document.getElementById('channelName').value = '';
+            document.getElementById('channelGroup').value = '';
+            document.getElementById('channelUrl').value = '';
+            editingIndex = -1;
+            document.querySelector('.btn-primary').innerHTML = '<span>âž•</span> ThÃªm kÃªnh';
+            document.querySelector('.btn-primary').onclick = addChannel;
+        }
+
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.className = 'toast ' + type;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        loadChannels();
+    </script>
+</body>
+</html>
