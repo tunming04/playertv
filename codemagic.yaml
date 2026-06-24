@@ -21,6 +21,7 @@ workflows:
   # ─────────────────────────────────────────────────────────────────────────────
   ios-build:
     name: iOS Build (Preview + Sideload)
+    working_directory: ios
     max_build_duration: 60
     instance_type: mac_mini_m1
     triggering:
