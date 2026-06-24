@@ -30,12 +30,16 @@ struct HomeView: View {
                 
                 VStack(spacing: 0) {
                     // 1. Logo - Tìm Kiếm
-                    HStack {
+                    HStack(spacing: 12) {
                         Image("app_logo_new")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 40, height: 40)
-                            .cornerRadius(8)
+                            .frame(width: 44, height: 44)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.yellow.opacity(0.5), lineWidth: 1)
+                            )
                             
                         HStack {
                             Image(systemName: "magnifyingglass")
