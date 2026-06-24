@@ -71,9 +71,22 @@ fun HomeScreen(
     var isMuted by remember { mutableStateOf(false) }
     var showDrawer by remember { mutableStateOf(false) }
 
-    // Load default playlist from /api/channels
+    // Load channels: cache-first → instant UI, then refresh in background
     LaunchedEffect(Unit) {
-        isLoading = true
+        // 1. Load from cache instantly
+        val cached = com.player.tv.util.ChannelCache.load(context)
+        if (cached.isNotEmpty()) {
+            channels = cached
+            filteredChannels = cached
+            isLoading = false
+            if (currentChannel == null) {
+                playerViewModel.loadChannel(cached[0])
+            }
+        } else {
+            isLoading = true
+        }
+
+        // 2. Fetch fresh data in background
         try {
             val response = withContext(Dispatchers.IO) {
                 URL("https://playertv-app.buoisangvatoi.workers.dev/api/channels").readText()
@@ -92,15 +105,20 @@ fun HomeScreen(
                     logo = c.optString("logo", null)
                 ))
             }
-            channels = adminChannels
-            filteredChannels = adminChannels
-            if (adminChannels.isNotEmpty() && currentChannel == null) {
-                playerViewModel.loadChannel(adminChannels[0])
+            if (adminChannels.isNotEmpty()) {
+                channels = adminChannels
+                filteredChannels = adminChannels
+                com.player.tv.util.ChannelCache.save(context, adminChannels)
+                if (currentChannel == null) {
+                    playerViewModel.loadChannel(adminChannels[0])
+                }
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            channels = emptyList()
-            filteredChannels = emptyList()
+            if (channels.isEmpty()) {
+                channels = emptyList()
+                filteredChannels = emptyList()
+            }
         } finally {
             isLoading = false
         }
