@@ -113,7 +113,7 @@ class XtreamApiService {
         return "\(serverUrl)/live/\(username)/\(password)/\(streamId).m3u8"
     }
     
-    func buildVodStreamUrl(serverUrl: String, username: String, password: String, streamId: Int, extension: String = "mp4") -> String {
-        return "\(serverUrl)/movie/\(username)/\(password)/\(streamId).\(extension)"
+    func buildVodStreamUrl(serverUrl: String, username: String, password: String, streamId: Int, fileExtension: String = "mp4") -> String {
+        return "\(serverUrl)/movie/\(username)/\(password)/\(streamId).\(fileExtension)"
     }
 }
