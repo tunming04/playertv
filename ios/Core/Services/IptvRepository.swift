@@ -1,4 +1,4 @@
-﻿import Foundation
+import Foundation
 import Combine
 
 class AppRepository: ObservableObject {
@@ -21,7 +21,8 @@ class AppRepository: ObservableObject {
     // MARK: - Playlist Operations
     
     func importM3uFromUrl(_ url: String, name: String) async throws -> Playlist {
-        let channels = try await m3uParser.parseFromUrl(url)
+        let result = try await M3UParser.parse(url: url)
+        let channels = result.channels
         guard !channels.isEmpty else {
             throw IptvError.noChannels
         }
@@ -47,7 +48,7 @@ class AppRepository: ObservableObject {
     }
     
     func importM3uFromFile(_ content: String, name: String) throws -> Playlist {
-        let channels = m3uParser.parse(content)
+        let channels = M3UParser.parseContent(content)
         guard !channels.isEmpty else {
             throw IptvError.noChannels
         }
@@ -143,7 +144,8 @@ class AppRepository: ObservableObject {
         switch playlist.type {
         case .m3u, .m3uFile:
             guard let url = playlist.url else { return [] }
-            return try await m3uParser.parseFromUrl(url)
+            let result = try await M3UParser.parse(url: url)
+            return result.channels
             
         case .xtream:
             guard let serverUrl = playlist.serverUrl,
