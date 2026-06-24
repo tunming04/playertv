@@ -1,6 +1,6 @@
 import Foundation
 
-struct Channel: Identifiable, Codable {
+struct Channel: Identifiable, Codable, Hashable {
     let id: String
     let name: String
     var url: String
@@ -11,6 +11,14 @@ struct Channel: Identifiable, Codable {
     let isRadio: Bool
     let streamFormat: StreamFormat
     let streamType: StreamType
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
+    static func == (lhs: Channel, rhs: Channel) -> Bool {
+        lhs.id == rhs.id
+    }
     
     init(id: String, name: String, url: String, logo: String? = nil, groupTitle: String? = nil, tvgId: String? = nil, tvgName: String? = nil, isRadio: Bool = false, streamFormat: StreamFormat = .hls, streamType: StreamType = .live) {
         self.id = id
