@@ -58,7 +58,7 @@ struct SettingsView: View {
             }
             .navigationTitle("Cài đặt")
             .sheet(isPresented: $showAddPlaylist) {
-                AddPlaylistView(isPresented: $showAddPlaylist)
+                AddPlaylistView()
             }
         }
     }

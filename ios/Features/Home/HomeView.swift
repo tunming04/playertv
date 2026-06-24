@@ -82,6 +82,22 @@ struct HomeView: View {
                                 }
                             }
                         
+                        // Loading indicator when switching channels
+                        if playerManager.isLoading {
+                            ZStack {
+                                Color.black
+                                VStack(spacing: 12) {
+                                    ProgressView()
+                                        .progressViewStyle(CircularProgressViewStyle(tint: .yellow))
+                                        .scaleEffect(1.2)
+                                    Text("Đang tải kênh...")
+                                        .font(.caption)
+                                        .foregroundColor(.textMuted)
+                                }
+                            }
+                            .aspectRatio(16/9, contentMode: .fit)
+                        }
+                        
                         // Overlay Controls
                         if showControls {
                             VStack {
@@ -424,10 +440,7 @@ struct ChannelCardView: View {
                     .frame(height: 4)
                     .padding(.top, 2)
                 } else {
-                    Text("Không có thông tin EPG")
-                        .font(.caption)
-                        .foregroundColor(.textMuted)
-                        .lineLimit(1)
+                    EmptyView()
                 }
             }
             .padding(8)

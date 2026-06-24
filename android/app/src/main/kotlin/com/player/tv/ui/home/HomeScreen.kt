@@ -60,6 +60,7 @@ fun HomeScreen(
 
     val currentChannel by playerViewModel.currentChannel.collectAsState()
     val isPlaying by playerViewModel.isPlaying.collectAsState()
+    val isChannelLoading by playerViewModel.isLoading.collectAsState()
     val errorMessage by playerViewModel.errorMessage.collectAsState()
 
     val groups = remember(channels) {
@@ -214,6 +215,26 @@ fun HomeScreen(
                     },
                     modifier = Modifier.fillMaxSize().clickable { showControls = !showControls; showDrawer = false }
                 )
+
+                // Loading indicator when switching channels
+                if (isChannelLoading) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            CircularProgressIndicator(color = Yellow)
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Text(
+                                text = "Đang tải kênh...",
+                                color = TextMuted,
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
+                    }
+                }
 
                 // Custom Overlay Controls
                 androidx.compose.animation.AnimatedVisibility(
@@ -471,11 +492,7 @@ fun ChannelCard(channel: Channel, currentEpg: EpgProgram?, isPlaying: Boolean, o
                         trackColor = Color.White.copy(alpha = 0.1f)
                     )
                 } else {
-                    Text(
-                        text = "Không có thông tin EPG",
-                        color = TextMuted,
-                        style = MaterialTheme.typography.bodySmall
-                    )
+                    Spacer(modifier = Modifier.height(4.dp))
                 }
             }
         }

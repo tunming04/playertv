@@ -26,6 +26,9 @@ class PlayerViewModel @Inject constructor(
     private val _isPlaying = MutableStateFlow(false)
     val isPlaying: StateFlow<Boolean> = _isPlaying.asStateFlow()
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
@@ -42,7 +45,10 @@ class PlayerViewModel @Inject constructor(
             addListener(object : Player.Listener {
                 override fun onPlaybackStateChanged(playbackState: Int) {
                     when (playbackState) {
-                        Player.STATE_READY -> _isPlaying.value = true
+                        Player.STATE_READY -> {
+                            _isPlaying.value = true
+                            _isLoading.value = false
+                        }
                         Player.STATE_ENDED -> _isPlaying.value = false
                         Player.STATE_BUFFERING -> { }
                     }
@@ -51,18 +57,20 @@ class PlayerViewModel @Inject constructor(
                 override fun onPlayerError(error: PlaybackException) {
                     _errorMessage.value = "Lỗi phát kênh: Bị chặn hoặc link hỏng"
                     _isPlaying.value = false
+                    _isLoading.value = false
                 }
             })
         }
 
     fun loadChannel(channel: Channel) {
         _errorMessage.value = null
+        _isLoading.value = true
+        _isPlaying.value = false
+        _currentChannel.value = channel
         val mediaItem = MediaItem.fromUri(channel.url)
         exoPlayer.setMediaItem(mediaItem)
         exoPlayer.prepare()
         exoPlayer.play()
-        _currentChannel.value = channel
-        _isPlaying.value = true
     }
 
     fun togglePlayPause() {
