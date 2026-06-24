@@ -1,0 +1,44 @@
+# macOS
+.DS_Store
+
+# Xcode
+build/
+DerivedData/
+*.xcodeproj/
+*.xcworkspace/
+xcuserdata/
+*.ipa
+*.xcarchive
+*.dSYM.zip
+*.dSYM
+
+# Swift
+.build/
+.swiftpm/
+Package.resolved
+
+# Android
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/.kotlin/
+android/release/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Tools
+tool-ios.py
+tool-android.py
+_check_repo.py
+docs/
+MOBILE_SYNC_NOTES.md
+SYSTEM_DESIGN.md
+
+# Misc
+*.log
+artifacts/

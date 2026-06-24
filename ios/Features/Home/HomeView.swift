@@ -2,13 +2,13 @@ import SwiftUI
 import AVKit
 
 struct HomeView: View {
+    @EnvironmentObject var playerManager: PlayerManager
     @State private var channels: [Channel] = []
     @State private var filteredChannels: [Channel] = []
     @State private var epgMapping: [String: EpgProgram] = [:]
     @State private var isLoading: Bool = false
     @State private var searchQuery: String = ""
     @State private var selectedGroup: String = "Tất cả"
-    @State private var playingChannel: Channel? = nil
     
     var groups: [String] {
         var set = Set(channels.compactMap { $0.groupTitle }.filter { !$0.isEmpty })
@@ -17,8 +17,7 @@ struct HomeView: View {
         return sorted
     }
     
-    // Player states
-    @State private var player: AVPlayer = AVPlayer()
+    // UI states
     @State private var showControls: Bool = false
     @State private var isMuted: Bool = false
     @State private var showDrawer: Bool = false
@@ -30,7 +29,7 @@ struct HomeView: View {
                 Color.darkBackground.ignoresSafeArea()
                 
                 VStack(spacing: 0) {
-                    // 1. Logo - TĂ¬m Kiáº¿m
+                    // 1. Logo - Tìm Kiếm
                     HStack {
                         Image("app_logo_new")
                             .resizable()
@@ -56,8 +55,8 @@ struct HomeView: View {
                     }
                     .padding()
                     
-                    // 2. Báº¡n Ä‘ang xem kĂªnh
-                    if let playing = playingChannel {
+                    // 2. Bạn đang xem kênh
+                    if let playing = playerManager.currentChannel {
                         HStack {
                             Text("Bạn đang xem kênh: \(playing.name)")
                                 .font(.headline)
@@ -68,9 +67,9 @@ struct HomeView: View {
                         .padding(.bottom, 8)
                     }
                     
-                    // 3. Videoplayer Ä‘ang phĂ¡t
+                    // 3. Videoplayer đang phát
                     ZStack(alignment: .topTrailing) {
-                        CustomVideoPlayer(player: player)
+                        CustomVideoPlayer(player: playerManager.player)
                             .aspectRatio(16/9, contentMode: .fit)
                             .background(Color.black)
                             .onTapGesture {
@@ -86,7 +85,6 @@ struct HomeView: View {
                         // Overlay Controls
                         if showControls {
                             VStack {
-                                // Top Bar
                                 HStack {
                                     Spacer()
                                     Button(action: {
@@ -115,11 +113,10 @@ struct HomeView: View {
                                 
                                 Spacer()
                                 
-                                // Bottom Bar
                                 HStack {
                                     Button(action: {
                                         isMuted.toggle()
-                                        player.isMuted = isMuted
+                                        playerManager.player.isMuted = isMuted
                                     }) {
                                         Image(systemName: isMuted ? "speaker.slash.fill" : "speaker.wave.3.fill")
                                             .foregroundColor(.white)
@@ -160,7 +157,7 @@ struct HomeView: View {
                                         LazyVStack {
                                             ForEach(filteredChannels) { channel in
                                                 Button(action: {
-                                                    playingChannel = channel
+                                                    playerManager.loadChannel(channel)
                                                     withAnimation {
                                                         showDrawer = false
                                                         showControls = false
@@ -169,7 +166,7 @@ struct HomeView: View {
                                                     HStack {
                                                         Text(channel.name)
                                                             .font(.subheadline)
-                                                            .foregroundColor(playingChannel?.id == channel.id ? .yellow : .white)
+                                                            .foregroundColor(playerManager.currentChannel?.id == channel.id ? .yellow : .white)
                                                         Spacer()
                                                     }
                                                     .padding(.horizontal)
@@ -227,12 +224,12 @@ struct HomeView: View {
                             ) {
                                 ForEach(filteredChannels) { channel in
                                     Button(action: {
-                                        playingChannel = channel
+                                        playerManager.loadChannel(channel)
                                     }) {
                                         ChannelCardView(
                                             channel: channel,
                                             epg: channel.tvgId.flatMap { epgMapping[$0] },
-                                            isPlaying: playingChannel?.id == channel.id
+                                            isPlaying: playerManager.currentChannel?.id == channel.id
                                         )
                                     }
                                     .buttonStyle(PlainButtonStyle())
@@ -247,7 +244,7 @@ struct HomeView: View {
             }
             .navigationBarHidden(true)
             .fullScreenCover(isPresented: $isFullScreen) {
-                if let playingChannel = playingChannel {
+                if let playingChannel = playerManager.currentChannel {
                     PlayerView(channel: playingChannel)
                         .onAppear {
                             AppDelegate.orientationLock = .landscape
@@ -259,17 +256,6 @@ struct HomeView: View {
                             UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
                             UIViewController.attemptRotationToDeviceOrientation()
                         }
-                }
-            }
-            .onChange(of: playingChannel) { newChannel in
-                if let newChannel = newChannel, let url = URL(string: newChannel.url) {
-                    let headers: [String: String] = [
-                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
-                    ]
-                    let asset = AVURLAsset(url: url, options: ["AVURLAssetHTTPHeaderFieldsKey": headers])
-                    let item = AVPlayerItem(asset: asset)
-                    player.replaceCurrentItem(with: item)
-                    player.play()
                 }
             }
             .task {
@@ -301,8 +287,8 @@ struct HomeView: View {
                     
                     self.channels = parsedChannels
                     self.filteredChannels = parsedChannels
-                    if let first = parsedChannels.first {
-                        self.playingChannel = first
+                    if let first = parsedChannels.first, playerManager.currentChannel == nil {
+                        playerManager.loadChannel(first)
                     }
                 } catch {
                     print("Failed to fetch admin playlist: \(error)")

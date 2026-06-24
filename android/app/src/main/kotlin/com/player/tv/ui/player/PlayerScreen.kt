@@ -18,68 +18,26 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.media3.common.MediaItem
-import androidx.media3.common.PlaybackException
-import androidx.media3.common.Player
-import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.player.tv.domain.model.Channel
 import com.player.tv.ui.theme.*
+import com.player.tv.util.FavoritesManager
 
 @Composable
 fun PlayerScreen(
     channel: Channel,
+    playerViewModel: PlayerViewModel,
     onBackClick: () -> Unit
 ) {
     val context = LocalContext.current
-    var isPlaying by remember { mutableStateOf(true) }
-    var isError by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf("") }
+    val currentChannel by playerViewModel.currentChannel.collectAsState()
+    val isPlaying by playerViewModel.isPlaying.collectAsState()
+    val errorMessage by playerViewModel.errorMessage.collectAsState()
 
-    val exoPlayer = remember {
-        val httpDataSourceFactory = androidx.media3.datasource.DefaultHttpDataSource.Factory()
-            .setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36")
-            .setAllowCrossProtocolRedirects(true)
-            
-        val dataSourceFactory = androidx.media3.datasource.DefaultDataSource.Factory(context, httpDataSourceFactory)
-            
-        ExoPlayer.Builder(context)
-            .setMediaSourceFactory(androidx.media3.exoplayer.source.DefaultMediaSourceFactory(dataSourceFactory))
-            .build().apply {
-            val mediaItem = MediaItem.Builder()
-                .setUri(channel.url)
-                .build()
-            setMediaItem(mediaItem)
-            prepare()
-            play()
-
-            addListener(object : Player.Listener {
-                override fun onPlaybackStateChanged(playbackState: Int) {
-                    when (playbackState) {
-                        Player.STATE_READY -> {
-                            isPlaying = true
-                            isError = false
-                        }
-                        Player.STATE_ENDED -> {
-                            isPlaying = false
-                        }
-                        Player.STATE_BUFFERING -> {
-                            // Loading
-                        }
-                    }
-                }
-
-                override fun onPlayerError(error: PlaybackException) {
-                    isError = true
-                    errorMessage = error.message ?: "Playback error"
-                }
-            })
-        }
-    }
-
-    DisposableEffect(Unit) {
-        onDispose {
-            exoPlayer.release()
+    // Load channel if not already playing this one
+    LaunchedEffect(channel.url) {
+        if (currentChannel?.url != channel.url) {
+            playerViewModel.loadChannel(channel)
         }
     }
 
@@ -101,7 +59,7 @@ fun PlayerScreen(
                 AndroidView(
                     factory = { ctx ->
                         PlayerView(ctx).apply {
-                            player = exoPlayer
+                            player = playerViewModel.exoPlayer
                             useController = true
                             setShowBuffering(PlayerView.SHOW_BUFFERING_ALWAYS)
                         }
@@ -110,7 +68,7 @@ fun PlayerScreen(
                 )
 
                 // Error overlay
-                if (isError) {
+                if (errorMessage != null) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
@@ -128,14 +86,13 @@ fun PlayerScreen(
                                 modifier = Modifier.size(48.dp)
                             )
                             Text(
-                                text = errorMessage,
+                                text = errorMessage ?: "",
                                 color = TextPrimary
                             )
                             Button(
                                 onClick = {
-                                    exoPlayer.prepare()
-                                    exoPlayer.play()
-                                    isError = false
+                                    playerViewModel.clearError()
+                                    playerViewModel.loadChannel(channel)
                                 }
                             ) {
                                 Text("Thử lại")
@@ -173,9 +130,9 @@ fun PlayerScreen(
                         }
                     }
                     // Favorite button
-                    val favoritesManager = remember { com.player.tv.util.FavoritesManager(context) }
+                    val favoritesManager = remember { FavoritesManager(context) }
                     var isFav by remember { mutableStateOf(favoritesManager.isFavorite(channel.url)) }
-                    
+
                     IconButton(
                         onClick = {
                             favoritesManager.toggleFavorite(channel)

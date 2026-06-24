@@ -3,7 +3,7 @@ import Foundation
 struct Channel: Identifiable, Codable {
     let id: String
     let name: String
-    let url: String
+    var url: String
     let logo: String?
     let groupTitle: String?
     let tvgId: String?
@@ -11,6 +11,19 @@ struct Channel: Identifiable, Codable {
     let isRadio: Bool
     let streamFormat: StreamFormat
     let streamType: StreamType
+    
+    init(id: String, name: String, url: String, logo: String? = nil, groupTitle: String? = nil, tvgId: String? = nil, tvgName: String? = nil, isRadio: Bool = false, streamFormat: StreamFormat = .hls, streamType: StreamType = .live) {
+        self.id = id
+        self.name = name
+        self.url = url
+        self.logo = logo
+        self.groupTitle = groupTitle
+        self.tvgId = tvgId
+        self.tvgName = tvgName
+        self.isRadio = isRadio
+        self.streamFormat = streamFormat
+        self.streamType = streamType
+    }
 }
 
 enum StreamFormat: String, Codable {

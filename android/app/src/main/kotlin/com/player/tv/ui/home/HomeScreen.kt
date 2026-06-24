@@ -30,13 +30,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.media3.common.MediaItem
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.ui.PlayerView
 import coil.compose.AsyncImage
 import com.player.tv.R
 import com.player.tv.domain.model.Channel
 import com.player.tv.domain.model.EpgProgram
+import com.player.tv.ui.player.PlayerViewModel
 import com.player.tv.ui.theme.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -47,8 +45,9 @@ import java.net.URL
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    onChannelClick: (Channel) -> Unit, // used for full screen if needed
-    onPlaylistAddClick: () -> Unit // optional
+    playerViewModel: PlayerViewModel,
+    onChannelClick: (Channel) -> Unit,
+    onPlaylistAddClick: () -> Unit
 ) {
     val context = LocalContext.current
     val activity = context as? Activity
@@ -58,9 +57,11 @@ fun HomeScreen(
     var isLoading by remember { mutableStateOf(true) }
     var searchQuery by remember { mutableStateOf("") }
     var selectedGroup by remember { mutableStateOf<String>("Tất cả") }
-    var playingChannel by remember { mutableStateOf<Channel?>(null) }
-    val coroutineScope = rememberCoroutineScope()
-    
+
+    val currentChannel by playerViewModel.currentChannel.collectAsState()
+    val isPlaying by playerViewModel.isPlaying.collectAsState()
+    val errorMessage by playerViewModel.errorMessage.collectAsState()
+
     val groups = remember(channels) {
         listOf("Tất cả") + channels.mapNotNull { it.groupTitle }.filter { it.isNotBlank() }.distinct().sorted()
     }
@@ -93,8 +94,8 @@ fun HomeScreen(
             }
             channels = adminChannels
             filteredChannels = adminChannels
-            if (adminChannels.isNotEmpty()) {
-                playingChannel = adminChannels[0]
+            if (adminChannels.isNotEmpty() && currentChannel == null) {
+                playerViewModel.loadChannel(adminChannels[0])
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -119,40 +120,6 @@ fun HomeScreen(
         filteredChannels = result
     }
 
-    var errorMessage by remember { mutableStateOf<String?>(null) }
-
-    // Initialize ExoPlayer
-    val exoPlayer = remember { 
-        val dataSourceFactory = androidx.media3.datasource.DefaultHttpDataSource.Factory()
-            .setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36")
-            .setAllowCrossProtocolRedirects(true)
-            
-        val mediaSourceFactory = androidx.media3.exoplayer.source.DefaultMediaSourceFactory(context)
-            .setDataSourceFactory(dataSourceFactory)
-            
-        ExoPlayer.Builder(context)
-            .setMediaSourceFactory(mediaSourceFactory)
-            .build().apply {
-                addListener(object : androidx.media3.common.Player.Listener {
-                    override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
-                        errorMessage = "Lỗi phát kênh: Bị chặn hoặc link hỏng"
-                    }
-                })
-            }
-    }
-
-    // Update Player when channel changes
-    LaunchedEffect(playingChannel) {
-        playingChannel?.let { channel ->
-            errorMessage = null
-            val mediaItem = MediaItem.fromUri(channel.url)
-            exoPlayer.setMediaItem(mediaItem)
-            exoPlayer.prepare()
-            exoPlayer.play()
-            exoPlayer.volume = if(isMuted) 0f else 1f
-        }
-    }
-
     // Auto-hide controls
     LaunchedEffect(showControls) {
         if (showControls) {
@@ -160,12 +127,6 @@ fun HomeScreen(
             if(!showDrawer) {
                 showControls = false
             }
-        }
-    }
-
-    DisposableEffect(Unit) {
-        onDispose {
-            exoPlayer.release()
         }
     }
 
@@ -177,7 +138,7 @@ fun HomeScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            // 1. Logo - TĂ¬m Kiáº¿m
+            // 1. Logo - Tìm Kiếm
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -209,17 +170,17 @@ fun HomeScreen(
                 )
             }
 
-            // 2. Báº¡n Ä‘ang xem kĂªnh VTV 1
-            if (playingChannel != null) {
+            // 2. Bạn đang xem kênh
+            if (currentChannel != null) {
                 Text(
-                    text = "Bạn đang xem kênh: ${playingChannel!!.name}",
+                    text = "Bạn đang xem kênh: ${currentChannel!!.name}",
                     color = Yellow,
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                 )
             }
 
-            // 3. Videoplayer Ä‘ang phĂ¡t kĂªnh VTV1
+            // 3. Videoplayer đang phát kênh
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -228,14 +189,14 @@ fun HomeScreen(
             ) {
                 AndroidView(
                     factory = {
-                        PlayerView(context).apply {
-                            player = exoPlayer
-                            useController = false // Custom Controls
+                        androidx.media3.ui.PlayerView(context).apply {
+                            player = playerViewModel.exoPlayer
+                            useController = false
                         }
                     },
                     modifier = Modifier.fillMaxSize().clickable { showControls = !showControls; showDrawer = false }
                 )
-                
+
                 // Custom Overlay Controls
                 androidx.compose.animation.AnimatedVisibility(
                     visible = showControls,
@@ -250,7 +211,6 @@ fun HomeScreen(
                     )) {
                         // Top Actions
                         Row(modifier = Modifier.align(Alignment.TopEnd).padding(8.dp)) {
-                            // PIP
                             IconButton(onClick = {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                     val params = PictureInPictureParams.Builder()
@@ -261,36 +221,33 @@ fun HomeScreen(
                             }) {
                                 Icon(Icons.Default.PictureInPicture, "PIP", tint = Color.White)
                             }
-                            
-                            // Channel Drawer Toggle
+
                             IconButton(onClick = { showDrawer = true }) {
                                 Icon(Icons.Default.List, "Channels", tint = Color.White)
                             }
                         }
-                        
+
                         // Bottom Actions
                         Row(
                             modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(8.dp),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            // Volume Toggle
-                            IconButton(onClick = { 
+                            IconButton(onClick = {
                                 isMuted = !isMuted
-                                exoPlayer.volume = if(isMuted) 0f else 1f 
+                                playerViewModel.setMuted(isMuted)
                             }) {
                                 Icon(if(isMuted) Icons.Default.VolumeOff else Icons.Default.VolumeUp, "Volume", tint = Color.White)
                             }
-                            
-                            // Fullscreen (Navigate to PlayerScreen or toggle rotation)
+
                             IconButton(onClick = {
-                                playingChannel?.let { onChannelClick(it) }
+                                currentChannel?.let { onChannelClick(it) }
                             }) {
                                 Icon(Icons.Default.Fullscreen, "Fullscreen", tint = Color.White)
                             }
                         }
-                        
+
                         // Bottom Title
-                        playingChannel?.let {
+                        currentChannel?.let {
                             Text(
                                 text = it.name,
                                 color = Color.White,
@@ -300,7 +257,7 @@ fun HomeScreen(
                         }
                     }
                 }
-                
+
                 // Channel Drawer Overlay
                 androidx.compose.animation.AnimatedVisibility(
                     visible = showDrawer,
@@ -321,7 +278,7 @@ fun HomeScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clickable {
-                                        playingChannel = c
+                                        playerViewModel.loadChannel(c)
                                         showDrawer = false
                                         showControls = false
                                     }
@@ -329,11 +286,42 @@ fun HomeScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = c.name, 
-                                    color = if(c.id == playingChannel?.id) Yellow else Color.White,
+                                    text = c.name,
+                                    color = if(c.id == currentChannel?.id) Yellow else Color.White,
                                     style = MaterialTheme.typography.bodySmall,
                                     maxLines = 1
                                 )
+                            }
+                        }
+                    }
+                }
+
+                // Error overlay
+                if (errorMessage != null) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black.copy(alpha = 0.8f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            Icon(
+                                Icons.Default.Error,
+                                contentDescription = null,
+                                tint = Color.Red,
+                                modifier = Modifier.size(40.dp)
+                            )
+                            Text(
+                                text = errorMessage ?: "",
+                                color = TextPrimary
+                            )
+                            Button(
+                                onClick = { playerViewModel.clearError() }
+                            ) {
+                                Text("Đóng")
                             }
                         }
                     }
@@ -366,7 +354,7 @@ fun HomeScreen(
                         }
                     }
                 }
-                
+
                 if (isLoading) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         CircularProgressIndicator(color = Yellow)
@@ -377,13 +365,13 @@ fun HomeScreen(
                         modifier = Modifier.fillMaxSize(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
-                        contentPadding = PaddingValues(bottom = 80.dp) // Bottom padding for navbar
+                        contentPadding = PaddingValues(bottom = 80.dp)
                     ) {
                         items(filteredChannels) { channel ->
                             val currentEpg = epgMapping[channel.tvgId]
-                            val isPlaying = playingChannel?.url == channel.url
-                            ChannelCard(channel = channel, currentEpg = currentEpg, isPlaying = isPlaying) {
-                                playingChannel = channel
+                            val isChannelPlaying = currentChannel?.url == channel.url
+                            ChannelCard(channel = channel, currentEpg = currentEpg, isPlaying = isChannelPlaying) {
+                                playerViewModel.loadChannel(channel)
                             }
                         }
                     }
@@ -433,7 +421,7 @@ fun ChannelCard(channel: Channel, currentEpg: EpgProgram?, isPlaying: Boolean, o
                     }
                 }
             }
-            
+
             Column {
                 Text(
                     text = channel.name,
@@ -443,13 +431,13 @@ fun ChannelCard(channel: Channel, currentEpg: EpgProgram?, isPlaying: Boolean, o
                     overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                 )
                 Spacer(modifier = Modifier.height(4.dp))
-                
+
                 if (currentEpg != null) {
                     val now = System.currentTimeMillis()
                     val progress = if (now >= currentEpg.endTime) 1f else if (now <= currentEpg.startTime) 0f else {
                         (now - currentEpg.startTime).toFloat() / (currentEpg.endTime - currentEpg.startTime)
                     }
-                    
+
                     Text(
                         text = currentEpg.title,
                         color = TextSecondary,
